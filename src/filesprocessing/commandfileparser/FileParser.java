@@ -1,6 +1,6 @@
 package filesprocessing.commandfileparser;
 
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 
 import filesprocessing.exceptions.*;
@@ -20,10 +20,10 @@ public class FileParser {
      * and extracts the commands to an ArrayList that holds each command (filter and order) in 1 index.
      *
      * @param path Actual path of command file in disk.
-     * @throws FileNotFoundException If file not found.
-     * @throws NoReadPermission      If there is no read permission to file.
+     * @throws FileNotFound     If file not found.
+     * @throws NoReadPermission If there is no read permission to file.
      */
-    public FileParser(String path) throws FileNotFoundException, NoReadPermission {
+    public FileParser(String path) throws FileNotFound, NoReadPermission {
         this.setCommandFile(path); // Sets the command file in a method that checks file existence and readability.
         // Converts file lines to ArrayList.
         CommandFileConverter fileConverter = new CommandFileConverter(this.commandFile);
@@ -57,13 +57,13 @@ public class FileParser {
      * Sets the command file. Checks file existence and readability - if not, throws relevant exceptions.
      *
      * @param path Actual path of command file in disk.
-     * @throws FileNotFoundException If file not found.
-     * @throws NoReadPermission      If there is no read permission to file.
+     * @throws FileNotFound     If file not found.
+     * @throws NoReadPermission If there is no read permission to file.
      */
-    private void setCommandFile(String path) throws FileNotFoundException, NoReadPermission {
+    private void setCommandFile(String path) throws FileNotFound, NoReadPermission {
         this.commandFile = new File(path); // Sets the command file.
         if (!this.commandFile.exists()) // If file doesn't exist, throws FileNotFound exception.
-            throw new FileNotFoundException("File not found in: " + this.commandFile.getAbsolutePath());
+            throw new FileNotFound(this.commandFile);
         if (!this.commandFile.canRead()) // If can't read file, throws NoReadPermission exception.
             throw new NoReadPermission(this.commandFile);
     }

@@ -10,6 +10,10 @@ public class Commands {
 
     /* Public instance methods */
 
+    Commands() {
+
+    }
+
     /**
      * @return Filter commands.
      */
