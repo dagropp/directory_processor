@@ -1,17 +1,16 @@
 package filesprocessing.commandfileparser;
 
 import java.io.File;
-import java.util.ArrayList;
 
-import filesprocessing.exceptions.*;
+import filesprocessing.type2exceptions.*;
 
 /**
  * This class parses a command file to a workable commands list.
  */
-public class FileParser {
+public class CommandFileParser {
     /* Class members - variables */
     private File commandFile; // Command file representation.
-    private ArrayList<Commands> commands; // Commands list as ArrayList of Commands objects.
+    private Commands[] commands; // Commands list as ArrayList of Commands objects.
 
     /* Constructors */
 
@@ -23,12 +22,13 @@ public class FileParser {
      * @throws FileNotFound     If file not found.
      * @throws NoReadPermission If there is no read permission to file.
      */
-    public FileParser(String path) throws FileNotFound, NoReadPermission {
+    public CommandFileParser(String path) throws FileNotFound, NoReadPermission, InvalidCommandHeader {
         this.setCommandFile(path); // Sets the command file in a method that checks file existence and readability.
         // Converts file lines to ArrayList.
-        CommandFileConverter fileConverter = new CommandFileConverter(this.commandFile);
+        LinesConverter fileConverter = new LinesConverter(this.commandFile);
+        LinesReformat reformatLines = new LinesReformat(fileConverter.getLines());
         // Generates commands ArrayList from the converted lines array.
-        CommandsGenerator commandsGenerator = new CommandsGenerator(fileConverter.getLines());
+        CommandsGenerator commandsGenerator = new CommandsGenerator(reformatLines.getFormattedLines());
         this.commands = commandsGenerator.getCommands(); // Assign the generated commands list to commands variable.
     }
 
@@ -37,7 +37,7 @@ public class FileParser {
     /**
      * @return Commands ArrayList, with each index holding Commands object with FILTER and ORDER commands.
      */
-    public ArrayList<Commands> getCommands() {
+    public Commands[] getCommands() {
         return this.commands;
     }
 
@@ -46,15 +46,15 @@ public class FileParser {
      * @return Specific Commands object with FILTER and ORDER commands.
      */
     public Commands getCommands(int index) {
-        if (index >= 0 && index < this.commands.size()) // Checks if index is on ArrayList range.
-            return this.commands.get(index); // If so, return the specified Commands object.
+        if (index >= 0 && index < this.commands.length) // Checks if index is on ArrayList range.
+            return this.commands[index]; // If so, return the specified Commands object.
         return null; // If not, return null.
     }
 
     /* Private instance methods */
 
     /**
-     * Sets the command file. Checks file existence and readability - if not, throws relevant exceptions.
+     * Sets the command file. Checks file existence and readability - if not, throws relevant type2exceptions.
      *
      * @param path Actual path of command file in disk.
      * @throws FileNotFound     If file not found.

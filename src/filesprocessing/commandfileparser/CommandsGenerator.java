@@ -1,6 +1,12 @@
 package filesprocessing.commandfileparser;
 
+import javax.sound.sampled.Line;
+import java.io.File;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.EnumMap;
+import java.util.HashMap;
 
 /**
  * This class generates a commands ArrayList from the converted lines list.
@@ -10,7 +16,7 @@ class CommandsGenerator {
     private static final String FILTER = "FILTER"; // Filter command header.
     private static final String ORDER = "ORDER"; // Order command header.
     /* Class members - variables */
-    private ArrayList<Commands> commands; // Commands list as ArrayList of Commands objects.
+    private Commands[] commands; // Commands list as ArrayList of Commands objects.
 
     /* Constructors */
 
@@ -19,8 +25,8 @@ class CommandsGenerator {
      *
      * @param lines List with command file's lines.
      */
-    CommandsGenerator(ArrayList<String> lines) {
-        this.commands = new ArrayList<>();
+    CommandsGenerator(String[] lines) {
+        this.commands = new Commands[lines.length / 4];
         this.setCommands(lines);
     }
 
@@ -29,7 +35,7 @@ class CommandsGenerator {
     /**
      * @return Commands list as ArrayList of Commands objects.
      */
-    ArrayList<Commands> getCommands() {
+    Commands[] getCommands() {
         return this.commands;
     }
 
@@ -41,8 +47,9 @@ class CommandsGenerator {
      *
      * @param lines List with command file's lines.
      */
-    private void setCommands(ArrayList<String> lines) {
+    private void setCommands(String[] lines) {
         boolean filterToggle = false; // Toggles between filter and order commands.
+        int commandIdx = 0;
         Commands temp = new Commands(); // Initializes temp Commands object.
         for (String line : lines) { // Iterates over the command file's lines.
             // If line's value is FILTER header, re-initializes temp Commands object and sets toggle to filter.
@@ -58,8 +65,10 @@ class CommandsGenerator {
                 // If toggle is set on ORDER, sets temp order to line, and if temp is valid, adds it to commands list.
             } else if (!filterToggle) {
                 temp.setOrder(line);
-                if (temp.validList())
-                    this.commands.add(temp);
+                if (temp.validList()) {
+                    this.commands[commandIdx] = (temp);
+                    commandIdx++;
+                }
             }
         }
     }
