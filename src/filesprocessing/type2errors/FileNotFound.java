@@ -1,4 +1,4 @@
-package filesprocessing.type2exceptions;
+package filesprocessing.type2errors;
 
 import java.io.File;
 

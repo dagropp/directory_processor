@@ -1,8 +1,9 @@
 package filesprocessing;
 
-import filesprocessing.commandfileparser.Commands;
+import filesprocessing.commandfileparser.Command;
 import filesprocessing.commandfileparser.CommandFileParser;
 import filesprocessing.filter.Filter;
+import filesprocessing.filter.FilterFactory;
 import filesprocessing.filter.ReformatFilter;
 import filesprocessing.order.OrderFactory;
 
@@ -37,31 +38,30 @@ public class DirectoryProcessor {
 
 
     private static final String ERROR_DEFAULT = "ERROR: ";
-    private static final File[] FILES = {
-            new File("filesprocessing/file_tester"),
-            new File("filesprocessing/FileFilter.java"),
-            new File("filesprocessing/Tester.java"),
-            new File("filesprocessing/DirectoryProcessor.java")
-    };
+    public static final String WARNING_MSG = "Warning in line ";
 
     public static void main(String[] args) {
         String sourceDirPath = args[0];
         String commandFilePath = args[1];
-        Commands[] commands = setCommandsList(commandFilePath);
-        ReformatFilter reformatFilter = new ReformatFilter(commands);
-        for (Filter filter : reformatFilter.getFilters())
-            System.out.println(filter);
+        File[] files = setFilesList(sourceDirPath);
+        Command[] commands = setCommandsList(commandFilePath);
+        generateOutput(commands, files);
     }
 
-    private static void generateOutput(Commands[] commands) {
-        for (int i = 0; i < commands.length; i++)
-            for (File file : new OrderFactory(FILES, commands[i], i).getResult())
+    private static void generateOutput(Command[] commands, File[] files) {
+        File[] filtered;
+        for (Command command : commands) {
+            filtered = FilterFactory.execute(files, command);
+            for (File file : new OrderFactory(filtered, command).getResult())
                 System.out.println(file.getName());
+            System.out.println();
+        }
+
     }
 
-    private static Commands[] setCommandsList(String commandFilePath) {
+    private static Command[] setCommandsList(String commandFilePath) {
         try {
-            return new CommandFileParser(commandFilePath).getCommands();
+            return CommandFileParser.execute(commandFilePath);
         } catch (Exception e) {
             System.err.println(ERROR_DEFAULT + e.getMessage());
             System.exit(0);
@@ -69,4 +69,13 @@ public class DirectoryProcessor {
         }
     }
 
+    private static File[] setFilesList(String sourceDirPath) {
+        try {
+            return SourceDirectoryParser.execute(sourceDirPath);
+        } catch (Exception e) {
+            System.err.println(ERROR_DEFAULT + e.getMessage());
+            System.exit(0);
+            return null;
+        }
+    }
 }

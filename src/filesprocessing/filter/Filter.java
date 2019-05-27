@@ -1,14 +1,17 @@
 package filesprocessing.filter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Filter {
     private String name;
     private ArrayList<String> params = new ArrayList<>();
     private boolean negation = false;
     private boolean warning = false;
+    private int lineNum;
 
-    Filter() {
+    Filter(int lineNum) {
+        this.lineNum = lineNum;
     }
 
     void setName(String name) {
@@ -31,12 +34,21 @@ public class Filter {
         return this.name;
     }
 
-    boolean getNegation() {
+    public boolean getNegation() {
         return this.negation;
     }
 
-    ArrayList<String> getParams() {
-        return this.params;
+    public String[] getParams() {
+        String[] result = new String[this.params.size()];
+        return this.params.toArray(result);
+    }
+
+    public boolean getWarning() {
+        return this.warning;
+    }
+
+    public int getLineNum() {
+        return this.lineNum;
     }
 
     @Override

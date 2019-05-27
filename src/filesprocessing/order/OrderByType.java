@@ -2,12 +2,12 @@ package filesprocessing.order;
 
 import java.io.File;
 
-class SortFilesType extends SortFiles {
-    private static SortFilesType sortFilesType = new SortFilesType();
+class OrderByType extends OrderFiles {
+    private static OrderByType sortFilesType = new OrderByType();
     private static final String TYPE_SEPARATOR = "."; // Symbol where file type extension starts.
     private static final String NO_TYPE = ""; // Return value for when file has no type.
 
-    private SortFilesType() {
+    private OrderByType() {
         super();
     }
 

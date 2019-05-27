@@ -1,13 +1,5 @@
 package filesprocessing.commandfileparser;
 
-import javax.sound.sampled.Line;
-import java.io.File;
-import java.io.LineNumberReader;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.EnumMap;
-import java.util.HashMap;
-
 /**
  * This class generates a commands ArrayList from the converted lines list.
  */
@@ -16,7 +8,7 @@ class CommandsGenerator {
     private static final String FILTER = "FILTER"; // Filter command header.
     private static final String ORDER = "ORDER"; // Order command header.
     /* Class members - variables */
-    private Commands[] commands; // Commands list as ArrayList of Commands objects.
+    private Command[] commands; // Command list as ArrayList of Command objects.
 
     /* Constructors */
 
@@ -25,17 +17,17 @@ class CommandsGenerator {
      *
      * @param lines List with command file's lines.
      */
-    CommandsGenerator(String[] lines) {
-        this.commands = new Commands[lines.length / 4];
+    CommandsGenerator(Line[] lines) {
+        this.commands = new Command[lines.length / 4];
         this.setCommands(lines);
     }
 
     /* Package-private instance methods */
 
     /**
-     * @return Commands list as ArrayList of Commands objects.
+     * @return Command list as ArrayList of Command objects.
      */
-    Commands[] getCommands() {
+    Command[] getCommands() {
         return this.commands;
     }
 
@@ -43,28 +35,28 @@ class CommandsGenerator {
 
     /**
      * Sets commands list. Each index that comes after "FILTER" or "ORDER" headers is assigned to the respected field
-     * in the Commands object, and if object commands are valid (i.e. not null) adds it to commands list.
+     * in the Command object, and if object commands are valid (i.e. not null) adds it to commands list.
      *
      * @param lines List with command file's lines.
      */
-    private void setCommands(String[] lines) {
+    private void setCommands(Line[] lines) {
         boolean filterToggle = false; // Toggles between filter and order commands.
         int commandIdx = 0;
-        Commands temp = new Commands(); // Initializes temp Commands object.
-        for (String line : lines) { // Iterates over the command file's lines.
-            // If line's value is FILTER header, re-initializes temp Commands object and sets toggle to filter.
+        Command temp = new Command(); // Initializes temp Command object.
+        for (Line line : lines) { // Iterates over the command file's lines.
+            // If line's value is FILTER header, re-initializes temp Command object and sets toggle to filter.
             if (line.equals(FILTER)) {
-                temp = new Commands();
+                temp = new Command();
                 filterToggle = true;
                 // If line's value is ORDER header, sets toggle to order.
             } else if (line.equals(ORDER)) {
                 filterToggle = false;
                 // If toggle is set on FILTER, sets temp filter to line.
             } else if (filterToggle) {
-                temp.setFilter(line);
+                temp.setFilter(line.toString(), line.getLineNum());
                 // If toggle is set on ORDER, sets temp order to line, and if temp is valid, adds it to commands list.
             } else if (!filterToggle) {
-                temp.setOrder(line);
+                temp.setOrder(line.toString(), line.getLineNum());
                 if (temp.validList()) {
                     this.commands[commandIdx] = (temp);
                     commandIdx++;

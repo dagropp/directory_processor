@@ -3,16 +3,18 @@ package filesprocessing.commandfileparser;
 import filesprocessing.DirectoryProcessor;
 
 /**
- * This class creates Commands object with FILTER and ORDER String commands.
+ * This class creates Command object with FILTER and ORDER String commands.
  */
-public class Commands {
+public class Command {
     /* Class members - variables */
     private String[] filter; // Filter commands.
     private String[] order; // Order commands.
+    private int filterLine;
+    private int orderLine;
 
     /* Public instance methods */
 
-    Commands() {
+    Command() {
     }
 
     /**
@@ -29,6 +31,14 @@ public class Commands {
         return this.order;
     }
 
+    public int getFilterLine() {
+        return this.filterLine;
+    }
+
+    public int getOrderLine() {
+        return this.orderLine;
+    }
+
     /* Package-private instance methods */
 
     /**
@@ -36,8 +46,9 @@ public class Commands {
      *
      * @param line Filter command line to set.
      */
-    public void setFilter(String line) {
+    public void setFilter(String line, int lineNum) {
         this.filter = this.parseLine(line);
+        this.filterLine = lineNum;
     }
 
     /**
@@ -45,8 +56,9 @@ public class Commands {
      *
      * @param line Order command line to set.
      */
-    public void setOrder(String line) {
+    public void setOrder(String line, int lineNum) {
         this.order = this.parseLine(line);
+        this.orderLine = lineNum;
     }
 
     /**
@@ -54,21 +66,6 @@ public class Commands {
      */
     boolean validList() {
         return this.filter != null && this.order != null;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder("*COMMAND FILE CONTENT*\nFILTER: ");
-        for (String command : this.getFilter()) {
-            String add = command + "  ";
-            result.append(add);
-        }
-        result.append("\nORDER: ");
-        for (String command : this.getOrder()) {
-            String add = command + "  ";
-            result.append(add);
-        }
-        return result.toString();
     }
 
     private String[] parseLine(String line) {
@@ -93,5 +90,20 @@ public class Commands {
             if (line.charAt(i) == DirectoryProcessor.SEPARATOR)
                 separators++;
         return separators + 1;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder("*COMMAND FILE CONTENT*\nFILTER: ");
+        for (String command : this.getFilter()) {
+            String add = command + "  ";
+            result.append(add);
+        }
+        result.append("\nORDER: ");
+        for (String command : this.getOrder()) {
+            String add = command + "  ";
+            result.append(add);
+        }
+        return result.toString();
     }
 }

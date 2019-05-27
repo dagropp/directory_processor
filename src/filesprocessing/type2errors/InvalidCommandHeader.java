@@ -1,4 +1,4 @@
-package filesprocessing.type2exceptions;
+package filesprocessing.type2errors;
 
 public class InvalidCommandHeader extends Exception {
     private static final long serialVersionUID = 1L; // ddd

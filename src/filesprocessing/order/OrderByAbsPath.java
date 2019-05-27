@@ -2,10 +2,10 @@ package filesprocessing.order;
 
 import java.io.File;
 
-class SortFilesPath extends SortFiles {
-    private static SortFilesPath sortFilesPath = new SortFilesPath();
+class OrderByAbsPath extends OrderFiles {
+    private static OrderByAbsPath sortFilesPath = new OrderByAbsPath();
 
-    private SortFilesPath() {
+    private OrderByAbsPath() {
         super();
     }
 

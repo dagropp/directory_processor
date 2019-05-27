@@ -2,10 +2,10 @@ package filesprocessing.order;
 
 import java.io.File;
 
-class SortFilesSize extends SortFiles {
-    private static SortFilesSize sortFilesSize = new SortFilesSize();
+class OrderBySize extends OrderFiles {
+    private static OrderBySize sortFilesSize = new OrderBySize();
 
-    private SortFilesSize() {
+    private OrderBySize() {
         super();
     }
 
