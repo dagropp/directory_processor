@@ -1,24 +1,24 @@
 package filesprocessing.filter;
 
 import filesprocessing.DirectoryProcessor;
-import filesprocessing.commandfileparser.Command;
+import filesprocessing.commandfileparser.CommandWrapper;
 
 public class ReformatFilter {
-    private Filter filter;
+    private FilterWrapper filter;
     private static final int LENGTH_NO_PARAMS = 1;
     private static final int LENGTH_1_PARAM = 2;
     private static final int LENGTH_2_PARAMS = 3;
 
 
-    public ReformatFilter(Command command) {
+    public ReformatFilter(CommandWrapper command) {
         this.filter = this.identifyFilter(command.getFilter(), command.getFilterLine());
     }
 
-    public Filter getFilter() {
+    public FilterWrapper getFilter() {
         return this.filter;
     }
 
-    private Filter identifyFilter(String[] filter, int lineNum) {
+    private FilterWrapper identifyFilter(String[] filter, int lineNum) {
         switch (filter[0]) {
             case DirectoryProcessor.FILTER_SIZE_GREATER:
                 return this.filterNum(filter, DirectoryProcessor.FILTER_SIZE_GREATER, LENGTH_1_PARAM, lineNum);
@@ -47,16 +47,16 @@ public class ReformatFilter {
         }
     }
 
-    private Filter filterDefault(int lineNum) {
-        Filter result = new Filter(lineNum);
+    private FilterWrapper filterDefault(int lineNum) {
+        FilterWrapper result = new FilterWrapper(lineNum);
         result.setName(DirectoryProcessor.FILTER_ALL);
         result.setWarning();
         return result;
     }
 
 
-    private Filter filterGeneral(String[] filter, String name, int cmdLength, int lineNum) {
-        Filter result = new Filter(lineNum);
+    private FilterWrapper filterGeneral(String[] filter, String name, int cmdLength, int lineNum) {
+        FilterWrapper result = new FilterWrapper(lineNum);
         result.setName(name);
         if (filter.length == cmdLength) {
             for (int i = 1; i < filter.length; i++)
@@ -71,8 +71,8 @@ public class ReformatFilter {
         return this.filterDefault(lineNum);
     }
 
-    private Filter filterNum(String[] filter, String name, int cmdLength, int lineNum) {
-        Filter result = this.filterGeneral(filter, name, cmdLength, lineNum);
+    private FilterWrapper filterNum(String[] filter, String name, int cmdLength, int lineNum) {
+        FilterWrapper result = this.filterGeneral(filter, name, cmdLength, lineNum);
         if (!result.getName().equals(name))
             return result;
         double num;
@@ -87,8 +87,8 @@ public class ReformatFilter {
         return result;
     }
 
-    private Filter filterYesNo(String[] filter, String name, int lineNum) {
-        Filter result = this.filterGeneral(filter, name, LENGTH_1_PARAM, lineNum);
+    private FilterWrapper filterYesNo(String[] filter, String name, int lineNum) {
+        FilterWrapper result = this.filterGeneral(filter, name, LENGTH_1_PARAM, lineNum);
         if (!result.getName().equals(name))
             return result;
         if (result.getParams().length > 1 || result.getNegation())

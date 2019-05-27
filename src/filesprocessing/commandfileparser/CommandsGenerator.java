@@ -5,10 +5,10 @@ package filesprocessing.commandfileparser;
  */
 class CommandsGenerator {
     /* Class members - constant variables */
-    private static final String FILTER = "FILTER"; // Filter command header.
+    private static final String FILTER = "FILTER"; // FilterWrapper command header.
     private static final String ORDER = "ORDER"; // Order command header.
     /* Class members - variables */
-    private Command[] commands; // Command list as ArrayList of Command objects.
+    private CommandWrapper[] commands; // CommandWrapper list as ArrayList of CommandWrapper objects.
 
     /* Constructors */
 
@@ -17,17 +17,17 @@ class CommandsGenerator {
      *
      * @param lines List with command file's lines.
      */
-    CommandsGenerator(Line[] lines) {
-        this.commands = new Command[lines.length / 4];
+    CommandsGenerator(LineWrapper[] lines) {
+        this.commands = new CommandWrapper[lines.length / 4];
         this.setCommands(lines);
     }
 
     /* Package-private instance methods */
 
     /**
-     * @return Command list as ArrayList of Command objects.
+     * @return CommandWrapper list as ArrayList of CommandWrapper objects.
      */
-    Command[] getCommands() {
+    CommandWrapper[] getCommands() {
         return this.commands;
     }
 
@@ -35,18 +35,18 @@ class CommandsGenerator {
 
     /**
      * Sets commands list. Each index that comes after "FILTER" or "ORDER" headers is assigned to the respected field
-     * in the Command object, and if object commands are valid (i.e. not null) adds it to commands list.
+     * in the CommandWrapper object, and if object commands are valid (i.e. not null) adds it to commands list.
      *
      * @param lines List with command file's lines.
      */
-    private void setCommands(Line[] lines) {
+    private void setCommands(LineWrapper[] lines) {
         boolean filterToggle = false; // Toggles between filter and order commands.
         int commandIdx = 0;
-        Command temp = new Command(); // Initializes temp Command object.
-        for (Line line : lines) { // Iterates over the command file's lines.
-            // If line's value is FILTER header, re-initializes temp Command object and sets toggle to filter.
+        CommandWrapper temp = new CommandWrapper(); // Initializes temp CommandWrapper object.
+        for (LineWrapper line : lines) { // Iterates over the command file's lines.
+            // If line's value is FILTER header, re-initializes temp CommandWrapper object and sets toggle to filter.
             if (line.equals(FILTER)) {
-                temp = new Command();
+                temp = new CommandWrapper();
                 filterToggle = true;
                 // If line's value is ORDER header, sets toggle to order.
             } else if (line.equals(ORDER)) {

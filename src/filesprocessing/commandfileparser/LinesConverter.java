@@ -9,7 +9,7 @@ class LinesConverter {
     /* Class members - constant variables */
     private static final String IO_ERROR = "IO error occurred.";
     /* Class members - variables */
-    private Line[] lines; // List with file's lines.
+    private LineWrapper[] lines; // List with file's lines.
 
     /* Constructors */
 
@@ -27,7 +27,7 @@ class LinesConverter {
     /**
      * @return ArrayList with file's lines.
      */
-    Line[] getLines() {
+    LineWrapper[] getLines() {
         return this.lines;
     }
 
@@ -41,9 +41,9 @@ class LinesConverter {
     private void setLines(File file) {
         // Tries to create a buffered reader with the command file. If successful does:
         try (LineNumberReader reader = new LineNumberReader(new FileReader(file))) {
-            this.lines = new Line[this.countLines(file)];
+            this.lines = new LineWrapper[this.countLines(file)];
             for (int i = 0; i < this.lines.length; i++)
-                this.lines[i] = new Line(reader.readLine(), reader.getLineNumber());
+                this.lines[i] = new LineWrapper(reader.readLine(), reader.getLineNumber());
         } catch (IOException e) {
             System.err.println(IO_ERROR);
             System.err.println(e.getMessage());

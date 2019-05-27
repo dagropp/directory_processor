@@ -19,7 +19,7 @@ public class CommandFileParser {
      * @throws FileNotFound     If file not found.
      * @throws NoReadPermission If there is no read permission to file.
      */
-    public static Command[] execute(String path) throws FileNotFound, NoReadPermission, InvalidCommandHeader {
+    public static CommandWrapper[] execute(String path) throws FileNotFound, NoReadPermission, InvalidCommandHeader {
         // Sets the command file in a method that checks file existence and readability.
         File commandFile = setCommandFile(path);
         // Converts file lines to Array.

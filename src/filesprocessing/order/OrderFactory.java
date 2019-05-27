@@ -1,16 +1,16 @@
 package filesprocessing.order;
 
 import filesprocessing.DirectoryProcessor;
-import filesprocessing.commandfileparser.Command;
+import filesprocessing.commandfileparser.CommandWrapper;
 
 import java.io.File;
 
 public class OrderFactory {
-    private Command command;
+    private CommandWrapper command;
     private boolean reverse;
     private File[] result;
 
-    public OrderFactory(File[] files, Command command) {
+    public OrderFactory(File[] files, CommandWrapper command) {
         this.command = command;
         OrderCommandValidator.validate(this.command);
         this.reverse = this.setReverse();

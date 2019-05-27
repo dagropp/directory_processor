@@ -3,22 +3,22 @@ package filesprocessing.commandfileparser;
 import filesprocessing.DirectoryProcessor;
 
 /**
- * This class creates Command object with FILTER and ORDER String commands.
+ * This class creates CommandWrapper object with FILTER and ORDER String commands.
  */
-public class Command {
+public class CommandWrapper {
     /* Class members - variables */
-    private String[] filter; // Filter commands.
+    private String[] filter; // FilterWrapper commands.
     private String[] order; // Order commands.
     private int filterLine;
     private int orderLine;
 
     /* Public instance methods */
 
-    Command() {
+    CommandWrapper() {
     }
 
     /**
-     * @return Filter commands.
+     * @return FilterWrapper commands.
      */
     public String[] getFilter() {
         return this.filter;
@@ -44,7 +44,7 @@ public class Command {
     /**
      * Sets filter commands variable.
      *
-     * @param line Filter command line to set.
+     * @param line FilterWrapper command line to set.
      */
     public void setFilter(String line, int lineNum) {
         this.filter = this.parseLine(line);

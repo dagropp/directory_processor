@@ -3,14 +3,14 @@ package filesprocessing.filter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Filter {
+public class FilterWrapper {
     private String name;
     private ArrayList<String> params = new ArrayList<>();
     private boolean negation = false;
     private boolean warning = false;
     private int lineNum;
 
-    Filter(int lineNum) {
+    FilterWrapper(int lineNum) {
         this.lineNum = lineNum;
     }
 
@@ -56,7 +56,7 @@ public class Filter {
         String args = "";
         for (String param : this.params)
             args += param + " ";
-        return "Filter name: " + this.name + " / Params: " + args + " / Negation: " + this.negation +
+        return "FilterWrapper name: " + this.name + " / Params: " + args + " / Negation: " + this.negation +
                 " / Warning: " + this.warning;
     }
 }

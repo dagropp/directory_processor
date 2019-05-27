@@ -1,16 +1,14 @@
 package filesprocessing;
 
-import filesprocessing.commandfileparser.Command;
+import filesprocessing.commandfileparser.CommandWrapper;
 import filesprocessing.commandfileparser.CommandFileParser;
-import filesprocessing.filter.Filter;
 import filesprocessing.filter.FilterFactory;
-import filesprocessing.filter.ReformatFilter;
 import filesprocessing.order.OrderFactory;
 
 import java.io.File;
 
 public class DirectoryProcessor {
-    public static final String FILTER_HEADER = "FILTER"; // Filter command header.
+    public static final String FILTER_HEADER = "FILTER"; // FilterWrapper command header.
     public static final String ORDER_HEADER = "ORDER"; // Order command header.
     public static final char SEPARATOR = '#';
     public static final String ORDER_BY_PATH = "abs";
@@ -44,13 +42,13 @@ public class DirectoryProcessor {
         String sourceDirPath = args[0];
         String commandFilePath = args[1];
         File[] files = setFilesList(sourceDirPath);
-        Command[] commands = setCommandsList(commandFilePath);
+        CommandWrapper[] commands = setCommandsList(commandFilePath);
         generateOutput(commands, files);
     }
 
-    private static void generateOutput(Command[] commands, File[] files) {
+    private static void generateOutput(CommandWrapper[] commands, File[] files) {
         File[] filtered;
-        for (Command command : commands) {
+        for (CommandWrapper command : commands) {
             filtered = FilterFactory.execute(files, command);
             for (File file : new OrderFactory(filtered, command).getResult())
                 System.out.println(file.getName());
@@ -59,7 +57,7 @@ public class DirectoryProcessor {
 
     }
 
-    private static Command[] setCommandsList(String commandFilePath) {
+    private static CommandWrapper[] setCommandsList(String commandFilePath) {
         try {
             return CommandFileParser.execute(commandFilePath);
         } catch (Exception e) {

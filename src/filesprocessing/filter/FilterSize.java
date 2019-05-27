@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class FilterSize extends FilterGeneral {
     private double[] params;
 
-    FilterSize(File[] files, Filter filter) {
+    FilterSize(File[] files, FilterWrapper filter) {
         super(files, filter);
         this.setParams(filter.getParams());
     }
