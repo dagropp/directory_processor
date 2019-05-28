@@ -1,6 +1,6 @@
 package filesprocessing.commandfileparser;
 
-import filesprocessing.DirectoryProcessor;
+import filesprocessing.manager.DirectoryProcessorFactory;
 
 /**
  * This class creates CommandWrapper object with FILTER and ORDER String commands.
@@ -14,7 +14,7 @@ public class CommandWrapper {
 
     /* Public instance methods */
 
-    CommandWrapper() {
+    public CommandWrapper() {
     }
 
     /**
@@ -62,9 +62,9 @@ public class CommandWrapper {
     }
 
     /**
-     * @return True if both filter and order commands are not null.
+     * @return True if both filter and order commands are not null. -- Am I using this method???
      */
-    boolean validList() {
+    public boolean validList() {
         return this.filter != null && this.order != null;
     }
 
@@ -73,7 +73,7 @@ public class CommandWrapper {
         int lastSeparator = 0;
         if (result.length > 1)
             for (int i = 0, j = 0; i < line.length(); i++) {
-                if (line.charAt(i) == DirectoryProcessor.SEPARATOR) {
+                if (line.charAt(i) == DirectoryProcessorFactory.SEPARATOR) {
                     result[j] = line.substring(lastSeparator, i);
                     lastSeparator = i + 1;
                     j++;
@@ -87,7 +87,7 @@ public class CommandWrapper {
     private int countSeparators(String line) {
         int separators = 0;
         for (int i = 0; i < line.length(); i++)
-            if (line.charAt(i) == DirectoryProcessor.SEPARATOR)
+            if (line.charAt(i) == DirectoryProcessorFactory.SEPARATOR)
                 separators++;
         return separators + 1;
     }

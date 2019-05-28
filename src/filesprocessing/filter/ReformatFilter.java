@@ -1,6 +1,6 @@
 package filesprocessing.filter;
 
-import filesprocessing.DirectoryProcessor;
+import filesprocessing.manager.DirectoryProcessorFactory;
 import filesprocessing.commandfileparser.CommandWrapper;
 
 public class ReformatFilter {
@@ -10,69 +10,69 @@ public class ReformatFilter {
     private static final int LENGTH_2_PARAMS = 3;
 
 
-    public ReformatFilter(CommandWrapper command) {
-        this.filter = this.identifyFilter(command.getFilter(), command.getFilterLine());
+    public static FilterWrapper execute(CommandWrapper command) {
+        FilterWrapper filter = identifyFilter(command.getFilter(), command.getFilterLine());
+        if (filter.isWarning())
+            System.err.println(DirectoryProcessorFactory.WARNING_MSG + filter.getLineNum());
+        return filter;
     }
 
-    public FilterWrapper getFilter() {
-        return this.filter;
-    }
-
-    private FilterWrapper identifyFilter(String[] filter, int lineNum) {
+    private static FilterWrapper identifyFilter(String[] filter, int lineNum) {
         switch (filter[0]) {
-            case DirectoryProcessor.FILTER_SIZE_GREATER:
-                return this.filterNum(filter, DirectoryProcessor.FILTER_SIZE_GREATER, LENGTH_1_PARAM, lineNum);
-            case DirectoryProcessor.FILTER_SIZE_SMALLER:
-                return this.filterNum(filter, DirectoryProcessor.FILTER_SIZE_SMALLER, LENGTH_1_PARAM, lineNum);
-            case DirectoryProcessor.FILTER_SIZE_BETWEEN:
-                return this.filterNum(filter, DirectoryProcessor.FILTER_SIZE_BETWEEN, LENGTH_2_PARAMS, lineNum);
-            case DirectoryProcessor.FILTER_VALUE_FILE_NAME:
-                return this.filterGeneral(filter, DirectoryProcessor.FILTER_VALUE_FILE_NAME, LENGTH_1_PARAM, lineNum);
-            case DirectoryProcessor.FILTER_VALUE_CONTAINS:
-                return this.filterGeneral(filter, DirectoryProcessor.FILTER_VALUE_CONTAINS, LENGTH_1_PARAM, lineNum);
-            case DirectoryProcessor.FILTER_VALUE_PREFIX:
-                return this.filterGeneral(filter, DirectoryProcessor.FILTER_VALUE_PREFIX, LENGTH_1_PARAM, lineNum);
-            case DirectoryProcessor.FILTER_VALUE_SUFFIX:
-                return this.filterGeneral(filter, DirectoryProcessor.FILTER_VALUE_SUFFIX, LENGTH_1_PARAM, lineNum);
-            case DirectoryProcessor.FILTER_PERMISSION_WRITE:
-                return this.filterYesNo(filter, DirectoryProcessor.FILTER_PERMISSION_WRITE, lineNum);
-            case DirectoryProcessor.FILTER_PERMISSION_EXECUTE:
-                return this.filterYesNo(filter, DirectoryProcessor.FILTER_PERMISSION_EXECUTE, lineNum);
-            case DirectoryProcessor.FILTER_HIDDEN:
-                return this.filterYesNo(filter, DirectoryProcessor.FILTER_HIDDEN, lineNum);
-            case DirectoryProcessor.FILTER_ALL:
-                return this.filterGeneral(filter, DirectoryProcessor.FILTER_ALL, LENGTH_NO_PARAMS, lineNum);
+            case DirectoryProcessorFactory.FILTER_SIZE_GREATER:
+                return isFilterNum(filter, DirectoryProcessorFactory.FILTER_SIZE_GREATER, LENGTH_1_PARAM, lineNum);
+            case DirectoryProcessorFactory.FILTER_SIZE_SMALLER:
+                return isFilterNum(filter, DirectoryProcessorFactory.FILTER_SIZE_SMALLER, LENGTH_1_PARAM, lineNum);
+            case DirectoryProcessorFactory.FILTER_SIZE_BETWEEN:
+                return isFilterNum(filter, DirectoryProcessorFactory.FILTER_SIZE_BETWEEN, LENGTH_2_PARAMS, lineNum);
+            case DirectoryProcessorFactory.FILTER_VALUE_FILE_NAME:
+                return isFilterGeneral(filter, DirectoryProcessorFactory.FILTER_VALUE_FILE_NAME, LENGTH_1_PARAM, lineNum);
+            case DirectoryProcessorFactory.FILTER_VALUE_CONTAINS:
+                return isFilterGeneral(filter, DirectoryProcessorFactory.FILTER_VALUE_CONTAINS, LENGTH_1_PARAM, lineNum);
+            case DirectoryProcessorFactory.FILTER_VALUE_PREFIX:
+                return isFilterGeneral(filter, DirectoryProcessorFactory.FILTER_VALUE_PREFIX, LENGTH_1_PARAM, lineNum);
+            case DirectoryProcessorFactory.FILTER_VALUE_SUFFIX:
+                return isFilterGeneral(filter, DirectoryProcessorFactory.FILTER_VALUE_SUFFIX, LENGTH_1_PARAM, lineNum);
+            case DirectoryProcessorFactory.FILTER_PERMISSION_WRITE:
+                return isFilterYesNo(filter, DirectoryProcessorFactory.FILTER_PERMISSION_WRITE, lineNum);
+            case DirectoryProcessorFactory.FILTER_PERMISSION_EXECUTE:
+                return isFilterYesNo(filter, DirectoryProcessorFactory.FILTER_PERMISSION_EXECUTE, lineNum);
+            case DirectoryProcessorFactory.FILTER_HIDDEN:
+                return isFilterYesNo(filter, DirectoryProcessorFactory.FILTER_HIDDEN, lineNum);
+            case DirectoryProcessorFactory.FILTER_ALL:
+                return isFilterGeneral(filter, DirectoryProcessorFactory.FILTER_ALL, LENGTH_NO_PARAMS, lineNum);
             default:
-                return this.filterDefault(lineNum);
+                return isFilterDefault(lineNum);
         }
     }
 
-    private FilterWrapper filterDefault(int lineNum) {
+    private static FilterWrapper isFilterDefault(int lineNum) {
         FilterWrapper result = new FilterWrapper(lineNum);
-        result.setName(DirectoryProcessor.FILTER_ALL);
+        result.setName(DirectoryProcessorFactory.FILTER_ALL);
         result.setWarning();
         return result;
     }
 
 
-    private FilterWrapper filterGeneral(String[] filter, String name, int cmdLength, int lineNum) {
+    private static FilterWrapper isFilterGeneral(String[] filter, String name, int cmdLength, int lineNum) {
         FilterWrapper result = new FilterWrapper(lineNum);
         result.setName(name);
         if (filter.length == cmdLength) {
             for (int i = 1; i < filter.length; i++)
                 result.addParam(filter[i]);
             return result;
-        } else if (filter.length == (cmdLength + 1) && filter[filter.length - 1].equals(DirectoryProcessor.FILTER_NOT)) {
+        } else if (filter.length == (cmdLength + 1) &&
+                filter[filter.length - 1].equals(DirectoryProcessorFactory.FILTER_NOT)) {
             for (int i = 1; i < filter.length - 1; i++)
                 result.addParam(filter[i]);
             result.setNegation(true);
             return result;
         }
-        return this.filterDefault(lineNum);
+        return isFilterDefault(lineNum);
     }
 
-    private FilterWrapper filterNum(String[] filter, String name, int cmdLength, int lineNum) {
-        FilterWrapper result = this.filterGeneral(filter, name, cmdLength, lineNum);
+    private static FilterWrapper isFilterNum(String[] filter, String name, int cmdLength, int lineNum) {
+        FilterWrapper result = isFilterGeneral(filter, name, cmdLength, lineNum);
         if (!result.getName().equals(name))
             return result;
         double num;
@@ -80,22 +80,22 @@ public class ReformatFilter {
             try {
                 num = Double.parseDouble(param);
                 if (num < 0)
-                    return this.filterDefault(lineNum);
+                    return isFilterDefault(lineNum);
             } catch (NumberFormatException e) {
-                return this.filterDefault(lineNum);
+                return isFilterDefault(lineNum);
             }
         return result;
     }
 
-    private FilterWrapper filterYesNo(String[] filter, String name, int lineNum) {
-        FilterWrapper result = this.filterGeneral(filter, name, LENGTH_1_PARAM, lineNum);
+    private static FilterWrapper isFilterYesNo(String[] filter, String name, int lineNum) {
+        FilterWrapper result = isFilterGeneral(filter, name, LENGTH_1_PARAM, lineNum);
         if (!result.getName().equals(name))
             return result;
-        if (result.getParams().length > 1 || result.getNegation())
-            return this.filterDefault(lineNum);
-        String param = result.getParams()[0];
-        if (!param.equals(DirectoryProcessor.FILTER_YES) && !param.equals(DirectoryProcessor.FILTER_NO))
-            return this.filterDefault(lineNum);
+        if (result.getParams().size() > 1)
+            return isFilterDefault(lineNum);
+        String param = result.getParams().get(0);
+        if (!param.equals(DirectoryProcessorFactory.FILTER_YES) && !param.equals(DirectoryProcessorFactory.FILTER_NO))
+            return isFilterDefault(lineNum);
         return result;
     }
 }

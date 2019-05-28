@@ -2,14 +2,13 @@ package filesprocessing.filter;
 
 import java.io.File;
 
-public class FilterAll {
-    private File[] files;
+public class FilterAll extends AbstractFilterNoParams {
 
-    FilterAll(File[] files) {
-        this.files = files.clone();
+    public FilterAll(File[] files, FilterWrapper filter) {
+        super(files, filter);
     }
 
-    File[] all() {
-        return this.files;
+    public File[] getResults() {
+        return this.isNegation() ? new File[0] : this.getFiles();
     }
 }

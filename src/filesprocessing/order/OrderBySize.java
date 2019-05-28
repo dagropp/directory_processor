@@ -2,7 +2,7 @@ package filesprocessing.order;
 
 import java.io.File;
 
-class OrderBySize extends OrderFiles {
+public class OrderBySize extends OrderFiles {
     private static OrderBySize sortFilesSize = new OrderBySize();
 
     private OrderBySize() {
@@ -14,6 +14,8 @@ class OrderBySize extends OrderFiles {
     }
 
     protected boolean compareFiles(File leftFile, File rightFile) {
+        if (leftFile.length() == rightFile.length())
+            return leftFile.getAbsolutePath().compareTo(rightFile.getAbsolutePath()) < 0;
         return leftFile.length() < rightFile.length();
     }
 }

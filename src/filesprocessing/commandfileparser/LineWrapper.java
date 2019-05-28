@@ -4,7 +4,7 @@ public class LineWrapper {
     private String text;
     private int lineNum;
 
-    LineWrapper(String text, int lineNum) {
+    public LineWrapper(String text, int lineNum) {
         this.text = text;
         this.lineNum = lineNum;
     }

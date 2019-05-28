@@ -1,4 +1,4 @@
-package filesprocessing;
+package filesprocessing.manager;
 
 import filesprocessing.type2errors.DirectoryNotFound;
 import filesprocessing.type2errors.NoReadPermission;

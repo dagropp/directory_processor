@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * This static class sorts Files array, using MergeSort algorithm.
  */
-abstract class OrderFiles {
+public abstract class OrderFiles {
     private File[] sortedArray;
 
     protected File[] runSort(File[] files, boolean reverse) {

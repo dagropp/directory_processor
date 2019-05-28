@@ -2,7 +2,7 @@ package filesprocessing.order;
 
 import java.io.File;
 
-class OrderByAbsPath extends OrderFiles {
+public class OrderByAbsPath extends OrderFiles {
     private static OrderByAbsPath sortFilesPath = new OrderByAbsPath();
 
     private OrderByAbsPath() {

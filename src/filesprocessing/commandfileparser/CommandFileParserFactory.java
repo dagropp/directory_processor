@@ -7,7 +7,7 @@ import filesprocessing.type2errors.*;
 /**
  * This class parses a command file to a workable commands list.
  */
-public class CommandFileParser {
+public class CommandFileParserFactory {
 
     /* Public static methods */
 

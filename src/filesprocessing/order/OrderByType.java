@@ -2,9 +2,9 @@ package filesprocessing.order;
 
 import java.io.File;
 
-class OrderByType extends OrderFiles {
+public class OrderByType extends OrderFiles {
     private static OrderByType sortFilesType = new OrderByType();
-    private static final String TYPE_SEPARATOR = "."; // Symbol where file type extension starts.
+    private static final char TYPE_SEPARATOR = '.'; // Symbol where file type extension starts.
     private static final String NO_TYPE = ""; // Return value for when file has no type.
 
     private OrderByType() {
@@ -16,7 +16,10 @@ class OrderByType extends OrderFiles {
     }
 
     protected boolean compareFiles(File leftFile, File rightFile) {
-        return this.fileType(leftFile).compareTo(this.fileType(rightFile)) < 0;
+        int comparison = this.fileType(leftFile).compareTo(this.fileType(rightFile));
+        if (comparison == 0)
+            return leftFile.getAbsolutePath().compareTo(rightFile.getAbsolutePath()) < 0;
+        return comparison < 0;
     }
 
     private String fileType(File file) {

@@ -5,7 +5,7 @@ import java.io.*;
 /**
  * This class gets a File and converts its lines to ArrayList.
  */
-class LinesConverter {
+public class LinesConverter {
     /* Class members - constant variables */
     private static final String IO_ERROR = "IO error occurred.";
     /* Class members - variables */
@@ -18,7 +18,7 @@ class LinesConverter {
      *
      * @param file The command file to convert to list.
      */
-    LinesConverter(File file) {
+    public LinesConverter(File file) {
         this.setLines(file);
     }
 
@@ -27,7 +27,7 @@ class LinesConverter {
     /**
      * @return ArrayList with file's lines.
      */
-    LineWrapper[] getLines() {
+    public LineWrapper[] getLines() {
         return this.lines;
     }
 

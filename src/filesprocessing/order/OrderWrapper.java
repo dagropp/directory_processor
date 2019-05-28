@@ -1,18 +1,15 @@
-package filesprocessing.filter;
+package filesprocessing.order;
 
 import filesprocessing.manager.Wrapper;
 
-import java.util.ArrayList;
-
-public class FilterWrapper implements Wrapper {
+public class OrderWrapper implements Wrapper {
     private String name;
     private boolean negation = false;
     private boolean warning = false;
     private int lineNum;
-    private ArrayList<String> params = new ArrayList<>();
 
 
-    public FilterWrapper(int lineNum) {
+    public OrderWrapper(int lineNum) {
         this.lineNum = lineNum;
     }
 
@@ -28,20 +25,12 @@ public class FilterWrapper implements Wrapper {
         this.warning = true;
     }
 
-    public void addParam(String param) {
-        this.params.add(param);
-    }
-
     public String getName() {
         return this.name;
     }
 
     public boolean isNegation() {
         return this.negation;
-    }
-
-    ArrayList<String> getParams() {
-        return this.params;
     }
 
     public boolean isWarning() {
@@ -51,13 +40,5 @@ public class FilterWrapper implements Wrapper {
     public int getLineNum() {
         return this.lineNum;
     }
-
-    @Override
-    public String toString() {
-        String args = "";
-        for (String param : this.params)
-            args += param + " ";
-        return "FilterWrapper name: " + this.name + " / Params: " + args + " / Negation: " + this.negation +
-                " / Warning: " + this.warning;
-    }
 }
+

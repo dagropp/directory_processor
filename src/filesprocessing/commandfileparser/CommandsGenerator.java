@@ -3,7 +3,7 @@ package filesprocessing.commandfileparser;
 /**
  * This class generates a commands ArrayList from the converted lines list.
  */
-class CommandsGenerator {
+public class CommandsGenerator {
     /* Class members - constant variables */
     private static final String FILTER = "FILTER"; // FilterWrapper command header.
     private static final String ORDER = "ORDER"; // Order command header.
@@ -17,7 +17,7 @@ class CommandsGenerator {
      *
      * @param lines List with command file's lines.
      */
-    CommandsGenerator(LineWrapper[] lines) {
+    public CommandsGenerator(LineWrapper[] lines) {
         this.commands = new CommandWrapper[lines.length / 4];
         this.setCommands(lines);
     }
@@ -27,7 +27,7 @@ class CommandsGenerator {
     /**
      * @return CommandWrapper list as ArrayList of CommandWrapper objects.
      */
-    CommandWrapper[] getCommands() {
+    public CommandWrapper[] getCommands() {
         return this.commands;
     }
 

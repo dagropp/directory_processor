@@ -1,33 +1,41 @@
 package filesprocessing.filter;
 
-import filesprocessing.DirectoryProcessor;
+import filesprocessing.manager.DirectoryProcessorFactory;
 import filesprocessing.commandfileparser.CommandWrapper;
 
 import java.io.File;
 
 public class FilterFactory {
     public static File[] execute(File[] files, CommandWrapper command) {
-        FilterWrapper filter = new ReformatFilter(command).getFilter();
+        FilterWrapper filter = ReformatFilter.execute(command);
+        return assignFilter(files, filter).getResults();
+    }
+
+    private static Filter assignFilter(File[] files, FilterWrapper filter) {
         switch (filter.getName()) {
-            case DirectoryProcessor.FILTER_SIZE_GREATER:
-                return new FilterSize(files, filter).greaterThan();
-            case DirectoryProcessor.FILTER_SIZE_SMALLER:
-                return new FilterSize(files, filter).smallerThan();
-            case DirectoryProcessor.FILTER_SIZE_BETWEEN:
-                return new FilterSize(files, filter).between();
-            case DirectoryProcessor.FILTER_VALUE_FILE_NAME:
-            case DirectoryProcessor.FILTER_VALUE_CONTAINS:
-            case DirectoryProcessor.FILTER_VALUE_PREFIX:
-            case DirectoryProcessor.FILTER_VALUE_SUFFIX:
-            case DirectoryProcessor.FILTER_PERMISSION_WRITE:
-                return new FilterYesNo(files, filter).writable();
-            case DirectoryProcessor.FILTER_PERMISSION_EXECUTE:
-                return new FilterYesNo(files, filter).executable();
-            case DirectoryProcessor.FILTER_HIDDEN:
-                return new FilterYesNo(files, filter).hidden();
-            case DirectoryProcessor.FILTER_ALL:
+            case DirectoryProcessorFactory.FILTER_SIZE_GREATER:
+                return new FilterSizeGreater(files, filter);
+            case DirectoryProcessorFactory.FILTER_SIZE_SMALLER:
+                return new FilterSizeSmaller(files, filter);
+            case DirectoryProcessorFactory.FILTER_SIZE_BETWEEN:
+                return new FilterSizeBetween(files, filter);
+            case DirectoryProcessorFactory.FILTER_VALUE_FILE_NAME:
+                return new FilterValueFileName(files, filter);
+            case DirectoryProcessorFactory.FILTER_VALUE_CONTAINS:
+                return new FilterValueContains(files, filter);
+            case DirectoryProcessorFactory.FILTER_VALUE_PREFIX:
+                return new FilterValuePrefix(files, filter);
+            case DirectoryProcessorFactory.FILTER_VALUE_SUFFIX:
+                return new FilterValueSuffix(files, filter);
+            case DirectoryProcessorFactory.FILTER_PERMISSION_WRITE:
+                return new FilterStateWritable(files, filter);
+            case DirectoryProcessorFactory.FILTER_PERMISSION_EXECUTE:
+                return new FilterStateExecutable(files, filter);
+            case DirectoryProcessorFactory.FILTER_HIDDEN:
+                return new FilterStateHidden(files, filter);
+            case DirectoryProcessorFactory.FILTER_ALL:
             default:
-                return null;
+                return new FilterAll(files, filter);
         }
     }
 }

@@ -1,11 +1,11 @@
 package filesprocessing.commandfileparser;
 
-import filesprocessing.DirectoryProcessor;
+import filesprocessing.manager.DirectoryProcessorFactory;
 import filesprocessing.type2errors.InvalidCommandHeader;
 
 import java.util.ArrayList;
 
-class LinesReformat {
+public class LinesReformat {
     private static final String SYMMETRY_ERR = "FILTER and ORDER commands amount is asymmetric.";
     private static final String HEADER_ERR = "CommandWrapper headers are invalid.";
     private int filterCounter = 0;
@@ -14,14 +14,14 @@ class LinesReformat {
 
     private enum LineSymbols {FILTER, ORDER, COMMAND}
 
-    LinesReformat(LineWrapper[] lines) throws InvalidCommandHeader {
+    public LinesReformat(LineWrapper[] lines) throws InvalidCommandHeader {
         ArrayList<LineLegend> linesLegend = setLinesLegend(lines);
         if (linesLegend == null) throw new InvalidCommandHeader(SYMMETRY_ERR);
         this.formattedLines = this.reformatLines(linesLegend);
         if (this.formattedLines == null) throw new InvalidCommandHeader(HEADER_ERR);
     }
 
-    LineWrapper[] getFormattedLines() {
+    public LineWrapper[] getFormattedLines() {
         return this.formattedLines;
     }
 
@@ -34,7 +34,7 @@ class LinesReformat {
                 result[i + 1] = new LineWrapper(linesLegend.get(j + 1).TEXT, linesLegend.get(j + 1).LINE_NUM);
                 result[i + 2] = new LineWrapper(linesLegend.get(j + 2).TEXT, linesLegend.get(j + 2).LINE_NUM);
                 if (j + 3 >= linesLegend.size() || linesLegend.get(j + 3).SYMBOL.equals(LineSymbols.FILTER)) {
-                    result[i + 3] = new LineWrapper(DirectoryProcessor.ORDER_BY_PATH, -1);
+                    result[i + 3] = new LineWrapper(DirectoryProcessorFactory.ORDER_BY_PATH, -1);
                     j += 3;
                 } else {
                     result[i + 3] = new LineWrapper(linesLegend.get(j + 3).TEXT, linesLegend.get(j + 3).LINE_NUM);
@@ -50,10 +50,10 @@ class LinesReformat {
     private ArrayList<LineLegend> setLinesLegend(LineWrapper[] lines) {
         ArrayList<LineLegend> linesLegend = new ArrayList<>();
         for (LineWrapper line : lines) {
-            if (line.equals(DirectoryProcessor.FILTER_HEADER)) {
+            if (line.equals(DirectoryProcessorFactory.FILTER_HEADER)) {
                 linesLegend.add(new LineLegend(LineSymbols.FILTER, line.toString(), line.getLineNum()));
                 this.filterCounter++;
-            } else if (line.equals(DirectoryProcessor.ORDER_HEADER)) {
+            } else if (line.equals(DirectoryProcessorFactory.ORDER_HEADER)) {
                 linesLegend.add(new LineLegend(LineSymbols.ORDER, line.toString(), line.getLineNum()));
                 this.orderCounter++;
             } else
