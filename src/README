@@ -14,27 +14,34 @@ dgropp
         Runs the program, by validating the command line args, listing the file in the source folder, parsing the
         command file, and then prints output with the specified FILTER and ORDER commands. Using the following classes:
         - SourceDirectoryParser - Parses the source directory and lists the file in it, ignoring sub-folders.
-    - Wrapper -
-        Filter/Order command wrapper interface, to hold information on command (name, negation, warnings, line number).
 
 * commandfileparser package: Parsing the command file *
     - CommandFileParserFactory -
         Factory that receives a command text file and parses it to a workable Command list. Using the following classes:
-        - LinesConverter -    Gets a text file and converts its lines to LineWrapper array.
-        - LineWrapper -       Creates a wrapper object with line's text and its original line number.
-        - LinesReformat -     Reformats the lines array, by checking if it contains correct and valid command headers,
-                              and by adding default commands to missing lines.
-        - CommandsGenerator - Generates a CommandWrapper array from the reformatted lines list.
-        - CommandWrapper -    Creates a wrapper object with FILTER and ORDER commands and its respected line numbers.
+        - LinesConverter -     Gets a text file and converts its lines to LineWrapper array.
+        - LineWrapper -        Creates a wrapper object with line's text and its original line number.
+        - LinesReformat -      Reformats the lines array, by checking if it contains correct and valid command headers,
+                               and by adding default commands to missing lines.
+    * commandsgenerator sub-package: Generating CommandWrapper array *
+        - CommandsGenerator -  Generates a CommandWrapper array from the reformatted lines list.
+        - CommandWrapper -     Creates a wrapper object with FILTER and ORDER command wrappers.
+        - ReformatExecutable - (Abstract) Represents reformatting guidelines and sets the required parameters.
+            * Extended by:
+            - ReformatFilter - This class reformats the filter String[], by checking if it contains correct and valid
+                               name and parameters, and by replacing invalid filters with default filter (all).
+            - ReformatOrder -  Reformats the order String[], by checking if it contains correct and valid name and
+                               parameters, and by replacing invalid order with default order (abs).
+        - ExecutableWrapper -  Interface for FILTER/ORDER command wrappers, to hold information on command (name,
+                               negation, warnings, line number).
+            * Implemented by:
+            - OrderWrapper -   Creates a wrapper object with order's name, negation, warning and its original
+                               line number.
+            - FilterWrapper -  Creates a wrapper object with filter's name, parameters, negation, warning and its
+                               original line number.
 
 * filter package: Executing and formatting the filter commands *
     - FilterFactory -
-    	Factory that receives a Command object and filters a files list using the specified command. Using the
-    	following classes:
-    	- ReformatFilter - This class reformats the filter String[], by checking if it contains correct and valid name
-    	                   and parameters, and by replacing invalid filters with default filter (all).
-    	- FilterWrapper -  This class creates a wrapper object with filter's name, parameters, negation, warning and its
-    	                   original line number.
+    	Factory that receives a Command object and filters a files list using the specified command.
     The actual filter commands are structured in the following hierarchy:
     - Filter - Interface to unify all filter classes.
     - AbstractFilterNoParams implements Filter - (Abstract) Represents a basic filter command with no parameters.
@@ -59,11 +66,7 @@ dgropp
 
 * order package: Executing and formatting the order commands *
     - OrderFactory -
-        Factory that receives a Command object and orders a files list using the specified command. Using the
-        following classes:
-        - ReformatOrder - Reformats the order String[], by checking if it contains correct and valid name and
-                          parameters, and by replacing invalid order with default order (abs).
-        - OrderWrapper -  Creates a wrapper object with order's name, negation, warning and its original line number.
+        Factory that receives a Command object and orders a files list using the specified command.
     The actual order commands are structured in the following hierarchy:
     - OrderFiles -         (Abstract) Sorts Files array, using MergeSort algorithm, while the actual comparator is
                            implemented in each child class.
@@ -72,12 +75,14 @@ dgropp
     	- OrderByType -    (Singleton) Sorts Files according to type, and if equal, according to absolute path.
 
 * type2errors package: Exception classes (extending Exception) for error handling *
-    - FileException - (Abstract) Represents a basic Exception for dealing with file errors.
-        - DirectoryNotFound - Thrown when specified directory not found.
-        - FileNotFound - Thrown when specified file not found.
-        - NoReadPermission - Thrown when can't read specified file/folder.
-    - InputException - (Abstract) Represents a basic Exception for dealing with input errors.
-        - InvalidArgs - Thrown when command line args are not in expected format.
+    - FileException -            (Abstract) Represents a basic Exception for dealing with file errors.
+        * Extended by:
+        - DirectoryNotFound -    Thrown when specified directory not found.
+        - FileNotFound -         Thrown when specified file not found.
+        - NoReadPermission -     Thrown when can't read specified file/folder.
+    - InputException -           (Abstract) Represents a basic Exception for dealing with input errors.
+        * Extended by:
+        - InvalidArgs -          Thrown when command line args are not in expected format.
         - InvalidCommandHeader - Thrown when FILTER/ORDER command headers are not in expected format.
 
 

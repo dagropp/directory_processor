@@ -1,4 +1,6 @@
-package filesprocessing.commandfileparser;
+package filesprocessing.commandfileparser.commandsgenerator;
+
+import filesprocessing.commandfileparser.LineWrapper;
 
 /**
  * This class generates a CommandWrapper array from the reformatted lines list.

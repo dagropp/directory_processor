@@ -1,6 +1,7 @@
 package filesprocessing.filter;
 
-import filesprocessing.commandfileparser.CommandWrapper;
+import filesprocessing.commandfileparser.commandsgenerator.CommandWrapper;
+import filesprocessing.commandfileparser.commandsgenerator.FilterWrapper;
 
 import java.io.File;
 
@@ -8,21 +9,38 @@ import java.io.File;
  * This class receives a Command object and filters a files list using the specified command.
  */
 public class FilterFactory {
-    static final String FILTER_SIZE_GREATER = "greater_than";
-    static final String FILTER_SIZE_SMALLER = "smaller_than";
-    static final String FILTER_SIZE_BETWEEN = "between";
-    static final String FILTER_VALUE_FILE_NAME = "file";
-    static final String FILTER_VALUE_CONTAINS = "contains";
-    static final String FILTER_VALUE_PREFIX = "prefix";
-    static final String FILTER_VALUE_SUFFIX = "suffix";
-    static final String FILTER_STATE_WRITE = "writable";
-    static final String FILTER_STATE_EXECUTE = "executable";
-    static final String FILTER_STATE_HIDDEN = "hidden";
-    static final String FILTER_ALL = "all";
+    private static final String FILTER_SIZE_GREATER = "greater_than";
+    private static final String FILTER_SIZE_SMALLER = "smaller_than";
+    private static final String FILTER_SIZE_BETWEEN = "between";
+    private static final String FILTER_VALUE_FILE_NAME = "file";
+    private static final String FILTER_VALUE_CONTAINS = "contains";
+    private static final String FILTER_VALUE_PREFIX = "prefix";
+    private static final String FILTER_VALUE_SUFFIX = "suffix";
+    private static final String FILTER_STATE_WRITE = "writable";
+    private static final String FILTER_STATE_EXECUTE = "executable";
+    private static final String FILTER_STATE_HIDDEN = "hidden";
+    private static final String FILTER_ALL = "all";
 
     public static File[] execute(File[] files, CommandWrapper command) {
-        FilterWrapper filter = ReformatFilter.execute(command);
-        return assignFilter(files, filter).getResults();
+        return assignFilter(files, command.getFilter()).getResults();
+    }
+
+    public static String getDefaultFilter() {
+        return FILTER_ALL;
+    }
+
+    public static String[] getSizeFilters(int params) {
+        return params == 1
+                ? new String[]{FILTER_SIZE_GREATER, FILTER_SIZE_SMALLER}
+                : new String[]{FILTER_SIZE_BETWEEN};
+    }
+
+    public static String[] getValueFilters() {
+        return new String[]{FILTER_VALUE_FILE_NAME, FILTER_VALUE_CONTAINS, FILTER_VALUE_PREFIX, FILTER_VALUE_SUFFIX};
+    }
+
+    public static String[] getStateFilters() {
+        return new String[]{FILTER_STATE_WRITE, FILTER_STATE_EXECUTE, FILTER_STATE_HIDDEN};
     }
 
     private static Filter assignFilter(File[] files, FilterWrapper filter) {

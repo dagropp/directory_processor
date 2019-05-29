@@ -1,5 +1,7 @@
 package filesprocessing.filter;
 
+import filesprocessing.commandfileparser.commandsgenerator.FilterWrapper;
+
 import java.io.File;
 
 /**
