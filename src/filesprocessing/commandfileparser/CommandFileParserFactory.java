@@ -5,7 +5,7 @@ import java.io.File;
 import filesprocessing.type2errors.*;
 
 /**
- * This class parses a command file to a workable commands list.
+ * This class receives a command text file and parses it to a workable Command list.
  */
 public class CommandFileParserFactory {
 

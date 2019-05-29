@@ -2,6 +2,9 @@ package filesprocessing.order;
 
 import filesprocessing.manager.Wrapper;
 
+/**
+ * This class creates a wrapper object with order's name, negation, warning and its original line number.
+ */
 public class OrderWrapper implements Wrapper {
     private String name;
     private boolean negation = false;

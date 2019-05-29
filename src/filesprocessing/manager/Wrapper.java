@@ -1,5 +1,8 @@
 package filesprocessing.manager;
 
+/**
+ * Filter/Order command wrapper interface, to hold information on command (name, negation, warnings, line number).
+ */
 public interface Wrapper {
     void setName(String name);
 

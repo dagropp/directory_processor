@@ -3,6 +3,9 @@ package filesprocessing.filter;
 import java.io.File;
 import java.util.Arrays;
 
+/**
+ * This class executes a filter command that returns all executable files (or its negation).
+ */
 public class FilterStateExecutable extends AbstractFilterState {
     public FilterStateExecutable(File[] files, FilterWrapper filter) {
         super(files, filter);

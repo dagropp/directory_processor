@@ -2,6 +2,9 @@ package filesprocessing.filter;
 
 import java.io.File;
 
+/**
+ * This class executes a filter command that returns all files (or none, with negation).
+ */
 public class FilterAll extends AbstractFilterNoParams {
 
     public FilterAll(File[] files, FilterWrapper filter) {

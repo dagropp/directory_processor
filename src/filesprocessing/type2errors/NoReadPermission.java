@@ -2,19 +2,14 @@ package filesprocessing.type2errors;
 
 import java.io.File;
 
-public class NoReadPermission extends Exception {
-    private static final long serialVersionUID = 1L; // ddd
-    private static final String ERROR_MSG = "Can't read file in location: "; // Default message for file constructor.
-
-    public NoReadPermission() {
-        super();
-    }
-
-    public NoReadPermission(String message) {
-        super(message);
-    }
+/**
+ * This class represents an exception thrown when can't read specified file/folder.
+ */
+public class NoReadPermission extends FileException {
+    private static final long serialVersionUID = 1L;
+    private static final String ERROR_MSG = "Can't read file/folder in location: "; // Exception error message.
 
     public NoReadPermission(File file) {
-        super(ERROR_MSG + file.getAbsolutePath());
+        super(ERROR_MSG, file);
     }
 }

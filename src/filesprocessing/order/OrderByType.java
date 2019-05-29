@@ -2,6 +2,9 @@ package filesprocessing.order;
 
 import java.io.File;
 
+/**
+ * This singleton class sorts Files according to type, and if equal, according to absolute path.
+ */
 public class OrderByType extends OrderFiles {
     private static OrderByType sortFilesType = new OrderByType();
     private static final char TYPE_SEPARATOR = '.'; // Symbol where file type extension starts.

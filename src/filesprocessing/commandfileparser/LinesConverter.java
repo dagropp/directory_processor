@@ -3,7 +3,7 @@ package filesprocessing.commandfileparser;
 import java.io.*;
 
 /**
- * This class gets a File and converts its lines to ArrayList.
+ * This class gets a text file and converts its lines to LineWrapper array.
  */
 public class LinesConverter {
     /* Class members - constant variables */

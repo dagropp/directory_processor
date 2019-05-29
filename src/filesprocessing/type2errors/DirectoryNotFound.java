@@ -2,19 +2,14 @@ package filesprocessing.type2errors;
 
 import java.io.File;
 
-public class DirectoryNotFound extends Exception {
-    private static final long serialVersionUID = 1L; // ddd
-    private static final String ERROR_MSG = "Directory not found in location: "; // Default message for file constructor.
-
-    public DirectoryNotFound() {
-        super();
-    }
-
-    public DirectoryNotFound(String message) {
-        super(message);
-    }
+/**
+ * This class represents an exception thrown when specified directory not found.
+ */
+public class DirectoryNotFound extends FileException {
+    private static final long serialVersionUID = 1L;
+    private static final String ERROR_MSG = "Directory not found in location: "; // Exception error message.
 
     public DirectoryNotFound(File file) {
-        super(ERROR_MSG + file.getAbsolutePath());
+        super(ERROR_MSG, file);
     }
 }

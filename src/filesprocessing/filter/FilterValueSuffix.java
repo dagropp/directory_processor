@@ -3,6 +3,10 @@ package filesprocessing.filter;
 import java.io.File;
 import java.util.Arrays;
 
+/**
+ * This class executes a filter command that returns all files which their names suffix equals the specified input
+ * (or its negation).
+ */
 public class FilterValueSuffix extends AbstractFilterValue {
     public FilterValueSuffix(File[] files, FilterWrapper filter) {
         super(files, filter);

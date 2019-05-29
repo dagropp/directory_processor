@@ -3,6 +3,9 @@ package filesprocessing.filter;
 import java.io.File;
 import java.util.Arrays;
 
+/**
+ * This class executes a filter command that returns all hidden files (or its negation).
+ */
 public class FilterStateHidden extends AbstractFilterState {
     public FilterStateHidden(File[] files, FilterWrapper filter) {
         super(files, filter);

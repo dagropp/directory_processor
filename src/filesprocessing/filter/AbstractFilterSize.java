@@ -3,6 +3,9 @@ package filesprocessing.filter;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * This abstract class represents a basic filter command with numeric Double parameters.
+ */
 public abstract class AbstractFilterSize extends AbstractFilterParams<Double> {
     private double BYTES_IN_KB = 1024;
 

@@ -1,18 +1,13 @@
 package filesprocessing.type2errors;
 
-public class InvalidCommandHeader extends Exception {
-    private static final long serialVersionUID = 1L; // ddd
-    private static final String ERROR_MSG = "Invalid command header in line: "; // Default message.
+/**
+ * This class represents an exception thrown when FILTER/ORDER command headers are not in expected format.
+ */
+public class InvalidCommandHeader extends InputException {
+    private static final long serialVersionUID = 1L;
+    private static final String ERROR_MSG = "FILTER/ORDER headers are invalid."; //
 
     public InvalidCommandHeader() {
-        super();
-    }
-
-    public InvalidCommandHeader(String message) {
-        super(message);
-    }
-
-    public InvalidCommandHeader(int line) {
-        super(ERROR_MSG + line);
+        super(ERROR_MSG);
     }
 }

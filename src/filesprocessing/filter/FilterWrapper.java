@@ -4,13 +4,15 @@ import filesprocessing.manager.Wrapper;
 
 import java.util.ArrayList;
 
+/**
+ * This class creates a wrapper object with filter's name, parameters, negation, warning and its original line number.
+ */
 public class FilterWrapper implements Wrapper {
     private String name;
+    private ArrayList<String> params = new ArrayList<>();
     private boolean negation = false;
     private boolean warning = false;
     private int lineNum;
-    private ArrayList<String> params = new ArrayList<>();
-
 
     public FilterWrapper(int lineNum) {
         this.lineNum = lineNum;
@@ -50,14 +52,5 @@ public class FilterWrapper implements Wrapper {
 
     public int getLineNum() {
         return this.lineNum;
-    }
-
-    @Override
-    public String toString() {
-        String args = "";
-        for (String param : this.params)
-            args += param + " ";
-        return "FilterWrapper name: " + this.name + " / Params: " + args + " / Negation: " + this.negation +
-                " / Warning: " + this.warning;
     }
 }

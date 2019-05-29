@@ -1,13 +1,17 @@
 package filesprocessing.commandfileparser;
 
-import filesprocessing.manager.DirectoryProcessorFactory;
+import filesprocessing.order.OrderFactory;
 import filesprocessing.type2errors.InvalidCommandHeader;
 
 import java.util.ArrayList;
 
+/**
+ * This class reformats the lines array, by checking if it contains correct and valid command headers, and by adding
+ * default commands to missing lines.
+ */
 public class LinesReformat {
-    private static final String SYMMETRY_ERR = "FILTER and ORDER commands amount is asymmetric.";
-    private static final String HEADER_ERR = "CommandWrapper headers are invalid.";
+    private static final String FILTER_HEADER = "FILTER"; // FilterWrapper command header.
+    private static final String ORDER_HEADER = "ORDER"; // Order command header.
     private int filterCounter = 0;
     private int orderCounter = 0;
     private LineWrapper[] formattedLines;
@@ -16,9 +20,8 @@ public class LinesReformat {
 
     public LinesReformat(LineWrapper[] lines) throws InvalidCommandHeader {
         ArrayList<LineLegend> linesLegend = setLinesLegend(lines);
-        if (linesLegend == null) throw new InvalidCommandHeader(SYMMETRY_ERR);
+        if (linesLegend == null) throw new InvalidCommandHeader();
         this.formattedLines = this.reformatLines(linesLegend);
-        if (this.formattedLines == null) throw new InvalidCommandHeader(HEADER_ERR);
     }
 
     public LineWrapper[] getFormattedLines() {
@@ -34,7 +37,7 @@ public class LinesReformat {
                 result[i + 1] = new LineWrapper(linesLegend.get(j + 1).TEXT, linesLegend.get(j + 1).LINE_NUM);
                 result[i + 2] = new LineWrapper(linesLegend.get(j + 2).TEXT, linesLegend.get(j + 2).LINE_NUM);
                 if (j + 3 >= linesLegend.size() || linesLegend.get(j + 3).SYMBOL.equals(LineSymbols.FILTER)) {
-                    result[i + 3] = new LineWrapper(DirectoryProcessorFactory.ORDER_BY_PATH, -1);
+                    result[i + 3] = new LineWrapper(OrderFactory.getDefaultOrder(), -1);
                     j += 3;
                 } else {
                     result[i + 3] = new LineWrapper(linesLegend.get(j + 3).TEXT, linesLegend.get(j + 3).LINE_NUM);
@@ -50,10 +53,10 @@ public class LinesReformat {
     private ArrayList<LineLegend> setLinesLegend(LineWrapper[] lines) {
         ArrayList<LineLegend> linesLegend = new ArrayList<>();
         for (LineWrapper line : lines) {
-            if (line.equals(DirectoryProcessorFactory.FILTER_HEADER)) {
+            if (line.equals(FILTER_HEADER)) {
                 linesLegend.add(new LineLegend(LineSymbols.FILTER, line.toString(), line.getLineNum()));
                 this.filterCounter++;
-            } else if (line.equals(DirectoryProcessorFactory.ORDER_HEADER)) {
+            } else if (line.equals(ORDER_HEADER)) {
                 linesLegend.add(new LineLegend(LineSymbols.ORDER, line.toString(), line.getLineNum()));
                 this.orderCounter++;
             } else

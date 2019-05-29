@@ -1,11 +1,10 @@
 package filesprocessing.commandfileparser;
 
-import filesprocessing.manager.DirectoryProcessorFactory;
-
 /**
- * This class creates CommandWrapper object with FILTER and ORDER String commands.
+ * This class creates a wrapper object with FILTER and ORDER commands and its respected line numbers.
  */
 public class CommandWrapper {
+    private static final char SEPARATOR = '#';
     /* Class members - variables */
     private String[] filter; // FilterWrapper commands.
     private String[] order; // Order commands.
@@ -73,7 +72,7 @@ public class CommandWrapper {
         int lastSeparator = 0;
         if (result.length > 1)
             for (int i = 0, j = 0; i < line.length(); i++) {
-                if (line.charAt(i) == DirectoryProcessorFactory.SEPARATOR) {
+                if (line.charAt(i) == SEPARATOR) {
                     result[j] = line.substring(lastSeparator, i);
                     lastSeparator = i + 1;
                     j++;
@@ -87,23 +86,8 @@ public class CommandWrapper {
     private int countSeparators(String line) {
         int separators = 0;
         for (int i = 0; i < line.length(); i++)
-            if (line.charAt(i) == DirectoryProcessorFactory.SEPARATOR)
+            if (line.charAt(i) == SEPARATOR)
                 separators++;
         return separators + 1;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder("*COMMAND FILE CONTENT*\nFILTER: ");
-        for (String command : this.getFilter()) {
-            String add = command + "  ";
-            result.append(add);
-        }
-        result.append("\nORDER: ");
-        for (String command : this.getOrder()) {
-            String add = command + "  ";
-            result.append(add);
-        }
-        return result.toString();
     }
 }

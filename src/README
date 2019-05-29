@@ -1,0 +1,193 @@
+dgropp
+
+
+
+
+=============================
+=      File description     =
+=============================
+
+- DirectoryProcessor - This class runs the program by executing the manager package factory.
+
+* manager package: Executing the program and error handling *
+    - DirectoryProcessorFactory -
+        Runs the program, by validating the command line args, listing the file in the source folder, parsing the
+        command file, and then prints output with the specified FILTER and ORDER commands. Using the following classes:
+        - SourceDirectoryParser - Parses the source directory and lists the file in it, ignoring sub-folders.
+    - Wrapper -
+        Filter/Order command wrapper interface, to hold information on command (name, negation, warnings, line number).
+
+* commandfileparser package: Parsing the command file *
+    - CommandFileParserFactory -
+        Factory that receives a command text file and parses it to a workable Command list. Using the following classes:
+        - LinesConverter -    Gets a text file and converts its lines to LineWrapper array.
+        - LineWrapper -       Creates a wrapper object with line's text and its original line number.
+        - LinesReformat -     Reformats the lines array, by checking if it contains correct and valid command headers,
+                              and by adding default commands to missing lines.
+        - CommandsGenerator - Generates a CommandWrapper array from the reformatted lines list.
+        - CommandWrapper -    Creates a wrapper object with FILTER and ORDER commands and its respected line numbers.
+
+* filter package: Executing and formatting the filter commands *
+    - FilterFactory -
+    	Factory that receives a Command object and filters a files list using the specified command. Using the
+    	following classes:
+    	- ReformatFilter - This class reformats the filter String[], by checking if it contains correct and valid name
+    	                   and parameters, and by replacing invalid filters with default filter (all).
+    	- FilterWrapper -  This class creates a wrapper object with filter's name, parameters, negation, warning and its
+    	                   original line number.
+    The actual filter commands are structured in the following hierarchy:
+    - Filter - Interface to unify all filter classes.
+    - AbstractFilterNoParams implements Filter - (Abstract) Represents a basic filter command with no parameters.
+        - FilterAll -                   Returns all files (or none, with negation).
+        - AbstractFilterState -         (Abstract) Represents a basic filter command with YES/NO parameter.
+            - FilterStateExecutable -   Returns all executable files (or its negation).
+            - FilterStateHidden -       Returns all hidden files (or its negation).
+            - FilterStateWritable -     Returns all writable files (or its negation).
+        - AbstractFilterParams -        (Abstract) Represents a basic filter command with generic parameters.
+            - AbstractFilterSize -      (Abstract) Represents a basic filter command with numeric Double parameters.
+                - FilterSizeBetween -   Returns all files in between specified size a and b in KB (or its negation).
+                - FilterSizeGreater -   Returns all files greater than specified size in KB (or its negation).
+                - FilterSizeSmaller -   Returns all files smaller than specified size in KB (or its negation).
+            - AbstractFilterValue -     (Abstract) Represents a basic filter command with String parameters.
+                - FilterValueContains - Returns all files which their names contain specified input (or its negation).
+                - FilterValueFileName - Returns all files which their names are equal to the specified input (or its
+                                        negation).
+                - FilterValuePrefix -   Returns all files which their names prefix equals the specified input (or its
+                                        negation).
+                - FilterValueSuffix -   Returns all files which their names suffix equals the specified input (or its
+                                        negation).
+
+* order package: Executing and formatting the order commands *
+    - OrderFactory -
+        Factory that receives a Command object and orders a files list using the specified command. Using the
+        following classes:
+        - ReformatOrder - Reformats the order String[], by checking if it contains correct and valid name and
+                          parameters, and by replacing invalid order with default order (abs).
+        - OrderWrapper -  Creates a wrapper object with order's name, negation, warning and its original line number.
+    The actual order commands are structured in the following hierarchy:
+    - OrderFiles -         (Abstract) Sorts Files array, using MergeSort algorithm, while the actual comparator is
+                           implemented in each child class.
+        - OrderByAbsPath - (Singleton) Sorts Files according to absolute path.
+    	- OrderBySize -    (Singleton) Sorts Files according to size, and if equal, according to absolute path.
+    	- OrderByType -    (Singleton) Sorts Files according to type, and if equal, according to absolute path.
+
+* type2errors package: Exception classes (extending Exception) for error handling *
+    - FileException - (Abstract) Represents a basic Exception for dealing with file errors.
+        - DirectoryNotFound - Thrown when specified directory not found.
+        - FileNotFound - Thrown when specified file not found.
+        - NoReadPermission - Thrown when can't read specified file/folder.
+    - InputException - (Abstract) Represents a basic Exception for dealing with input errors.
+        - InvalidArgs - Thrown when command line args are not in expected format.
+        - InvalidCommandHeader - Thrown when FILTER/ORDER command headers are not in expected format.
+
+
+
+=============================
+=          Design           =
+=============================
+- Inheritance -
+    SimpleHashSet contains methods that avoid code repetition in OpenHashSet and ClosedHashSet, while when necessary
+    Overriding the parent method to add another functionality.
+- Abstraction -
+    The parent class is abstract (given in the API), as there is no implementation of this hash set. Also in this class
+    I implemented abstract methods to be implemented in child classes, and thus maintaining a general guidlines of this
+    behaviour (mostly resize related methods).
+- Extensibility -
+    By implementing resize related methods and abstract methods in the parent class, allowing for additional String hash
+    sets to be created based on SimpleHashSet, and still follow the same rules and guidelines.
+- Minimal API -
+    All classes members that were not pre-defined are private. All methods that were not pre-defined in the given API
+    are private when optional (helper methods and methods to be used by child class), and protected when necessary
+    (mostly resize related) to share between child classes and create abstract methods to be implemented by child
+    classes.
+- Single responsibility -
+    I implemented a LinkedList "bucket" class to use in the OpenHashSet, and defined in it methods to handle the bucket.
+    Thus, allowing for replacing this bucket with another if necessary.
+
+
+
+=============================
+=  Implementation details   =
+=============================
+- Implementing OpenHashSet table -
+    I implemented a wrapper class that holds LinkedList buckets, called LinkedListContainer. In OpenHashSet, I assigned
+    the table to be an array of LinkedListContainer. Each added item is clamped using (hashCode & capacity), and if not
+    existent already constructs a new LinkedListContainer bucket or adds to existent bucket. For each addition/deletion
+    the element counter is updated, thus controlling set size very easily.
+    The wrapper class is constructed with 1 element, meaning there is no scenario where the table array holds an empty
+    bucket - buckets that are empty are null.
+    In the wrapper class I implemented 'add' method to add items, 'contains' to search for item in the bucket (didn't
+    use LinkedList 'contains' method, as it appears to be slower than just iterating over the list, as the buckets are
+    normally low in size), 'find and delete' method to find item in bucket and remove it if found.
+- Implementing ClosedHashSet delete mechanism -
+    I initialized a primitive boolean array the size of the table capacity, that holds deleted indexes to ignore later
+    on. On each deletion, the index that was deleted is marked as 'true' in the ignore list, thus when trying to find
+    item in table, method will ignore this index and continue searching, and not stop once reached null index. When
+    adding item, if found null index that is on the ignore list, fills this index and removes it from the ignore list.
+    Also, on each resize the ignore list is reinitialized with the new table capacity.
+    This is the most efficient solution I found to handle delete issues. At first, on each deletion I re-hashed the
+    whole table which was very time consuming. I also revoked the use of flagging the deleted index, as that would limit
+    the table's functionality, as it will limit certain values additions. Using TreeSet or any other permitted
+    Collection was not optimal as it would cause run-time issues on each addition (to check if index is contained in
+    Collection). Thus, I decided on a primitive array, as it is the most space efficient way I found to use, and the
+    run-time for each check is O(1).
+- Shared resize methods in SimpleHashSet -
+    The resize method appeared to be quite similar in both sets, so to avoid repeating code I implemented general
+    protected resize method in SimpleHashSet, and for the processes that required different code, I created abstract
+    methods to be implemented in the child class. Each resize the table is reinitialized and all elements are re-hashed.
+    To do so I copy the table elements (ignoring null indexes) to a temporary array and then re-hash all elements back
+    to the new table, without searching for duplicates, as elements are certain to be unique. The new capacity in each
+    resize is calculated as power of 2.
+    In cases were a resize was needed on "add" method, it is expected to resize *before* the addition of the new item.
+    To deal with that I first gathered if the new item is indeed unique and should be added, later I resized the table
+    and on the previous elements table I added the new item, thus (re)hashing it with the rest of the previous elements.
+- SimpleSetPerformanceAnalyzer -
+    To simplify the performance analyzer class, I created a UI, were the user enters which tests he/she wants to
+    perform. Code-wise, I divided each test to its own method. The UI receives an input, goes to a switch statement and
+    performs all the relevant tests. The main method calls only 1 method, that prints the initial UI.
+
+
+
+=============================
+=    Answers to questions   =
+=============================
+- Account, in separate, for OpenHashSet’s and ClosedHashSet’s bad results for data1.txt -
+    OpenHashSet holds a LinkedList bucket for each hash. In my implementation, once the hash found it goes to the
+    LinkedList container and iterates until it finds if the item is indeed not there, and then adds it. When all the
+    elements have the same hashcode it means basically that all the items go to the same index and thus each addition
+    costs O(n).
+    ClosedHashSet uses an Array that holds the hashcode clamped to it indexes. When all elements have the same hashcode
+    it means that each addition starts on the same index as the one before it, and travels the same journey in the
+    quadratic probing. Each new element will pass all the elements that were added before it. Meaning that each addition
+     will cause an iteration on the entire array, thus still resulting in O(n).
+- Summarize the strengths and weaknesses of each of the data structures as reflected by the results.
+  Which would you use for which purposes? -
+    - OpenHashSet and ClosedHashSet both performed quite well when receiving more natural mixture of elements (as data2).
+    Also they performed very well when searching based on merely hashing. When dealing with items with the same
+    hashcode, both contains and add were extremely slow.
+    - Java TreeSet appears to have good average results on all issues - rarely the fastest, never the slowest.
+    - Java LinkedList on the other hand performed relatively bad. In the API we were instructed to insist on unique
+    elements also for non-unique elements collections like LinkedList. Also the "contains" method in LinkedList is very
+    slow. Thus adding data was delayed with the contains method, and resulting in very slow performance on all tests.
+    - Java HashSet is very fast, and mostly got the best results. Sometimes its results were too good...
+        I would choose Java HashSet if I need to store unique elements and check if they exists.
+- How did your two implementations compare between themselves? -
+    - ClosedHashSet appears to perform better when the item it searches for exists in the table, as its journey towards
+    an existing item is relatively shorter than for non-existent item, as then it would iterate over most of the array.
+    - OpenHashSet appears to perform better when the item it searches for doesn't exist in the table. Also, when the
+     element searched had a different hashcode, this set was extremely quick as a different hashcode means an empty
+     LinkedList bucket.
+- How did your implementations compare to Java’s built in HashSet? -
+    Again, when dealing with elements with the same hashcode, Java HashSet was extremely quick in both add and contains
+    when my implementations were *extremely* slow.
+        - Add 'data1': OpenHashSet 55,215 ms. / ClosedHashSet 128,464 ms. / Java HashSet 120 ms.
+        - Contains for item with the same hashcode in 'data1': OpenHashSet 933,331 ns. / ClosedHashSet 3,143,190(!) ns.
+          / Java HashSet 39 ns.
+    When dealing with a more natural mixture of elements, my implementations worked very much alike Java HashSet, and on
+    times even better! Also when the elements had the same hashcode, and the "contains" method searched for an item with
+    different hashcode, my implementations were quicker.
+        - Add 'data2': OpenHashSet 52 ms. / ClosedHashSet 65 ms. / Java HashSet 39 ms.
+        - Contains for item with different hashcode in 'data1': OpenHashSet 26 ns. / ClosedHashSet 61 ns.
+          / Java HashSet 61 ns.
+        - Contains for existing item in 'data2': OpenHashSet 133 ns. / ClosedHashSet 61 ns. / Java HashSet 68 ns.
+        - Contains for non-existing item in 'data2': OpenHashSet 31 ns. / ClosedHashSet 76 ns. / Java HashSet 15 ns.

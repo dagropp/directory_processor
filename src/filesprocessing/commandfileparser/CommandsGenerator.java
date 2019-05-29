@@ -1,7 +1,7 @@
 package filesprocessing.commandfileparser;
 
 /**
- * This class generates a commands ArrayList from the converted lines list.
+ * This class generates a CommandWrapper array from the reformatted lines list.
  */
 public class CommandsGenerator {
     /* Class members - constant variables */

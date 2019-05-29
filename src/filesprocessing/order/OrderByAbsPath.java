@@ -2,6 +2,9 @@ package filesprocessing.order;
 
 import java.io.File;
 
+/**
+ * This singleton class sorts Files according to absolute path.
+ */
 public class OrderByAbsPath extends OrderFiles {
     private static OrderByAbsPath sortFilesPath = new OrderByAbsPath();
 

@@ -2,6 +2,9 @@ package filesprocessing.order;
 
 import java.io.File;
 
+/**
+ * This singleton class sorts Files according to size, and if equal, according to absolute path.
+ */
 public class OrderBySize extends OrderFiles {
     private static OrderBySize sortFilesSize = new OrderBySize();
 

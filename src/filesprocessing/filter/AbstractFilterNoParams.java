@@ -2,7 +2,10 @@ package filesprocessing.filter;
 
 import java.io.File;
 
-public abstract class AbstractFilterNoParams implements Filter{
+/**
+ * This abstract class represents a basic filter command with no parameters.
+ */
+public abstract class AbstractFilterNoParams implements Filter {
     private File[] files;
     private FilterWrapper filter;
     private boolean negation;

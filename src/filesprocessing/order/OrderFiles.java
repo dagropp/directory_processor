@@ -3,7 +3,8 @@ package filesprocessing.order;
 import java.io.File;
 
 /**
- * This static class sorts Files array, using MergeSort algorithm.
+ * This abstract class sorts Files array, using MergeSort algorithm, while the actual comparator is
+ * implemented in each child class.
  */
 public abstract class OrderFiles {
     private File[] sortedArray;

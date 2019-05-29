@@ -3,17 +3,17 @@ package filesprocessing.order;
 import filesprocessing.manager.DirectoryProcessorFactory;
 import filesprocessing.commandfileparser.CommandWrapper;
 
+/**
+ * This class reformats the order String[], by checking if it contains correct and valid name and parameters, and by
+ * replacing invalid order with default order (abs).
+ */
 public class ReformatOrder {
-    private static String[] orderCommands = {
-            DirectoryProcessorFactory.ORDER_BY_PATH,
-            DirectoryProcessorFactory.ORDER_BY_SIZE,
-            DirectoryProcessorFactory.ORDER_BY_TYPE
-    };
+    private static final String ORDER_REVERSE = "REVERSE";
 
     public static OrderWrapper execute(CommandWrapper command) {
         OrderWrapper order = identifyOrder(command.getOrder(), command.getOrderLine());
         if (order.isWarning())
-            System.err.println(DirectoryProcessorFactory.WARNING_MSG + order.getLineNum());
+            System.err.println(DirectoryProcessorFactory.getWarningMsg() + order.getLineNum());
         return order;
     }
 
@@ -24,7 +24,7 @@ public class ReformatOrder {
         else if (isOrderReversed(order))
             result.setNegation(true);
         else {
-            result.setName(DirectoryProcessorFactory.ORDER_BY_PATH);
+            result.setName(OrderFactory.getDefaultOrder());
             result.setWarning();
             return result;
         }
@@ -41,11 +41,11 @@ public class ReformatOrder {
         return order.length == 2 &&
                 inArray(order[0]) &&
                 order[1] != null &&
-                order[1].equals(DirectoryProcessorFactory.ORDER_REVERSE);
+                order[1].equals(ORDER_REVERSE);
     }
 
     private static boolean inArray(String string) {
-        for (String item : orderCommands)
+        for (String item : OrderFactory.getOrderCommands())
             if (string.equals(item))
                 return true;
         return false;
