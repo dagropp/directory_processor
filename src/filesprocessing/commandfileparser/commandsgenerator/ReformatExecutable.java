@@ -67,6 +67,8 @@ public abstract class ReformatExecutable<T extends ExecutableWrapper> {
     }
 
     /**
+     * Identifies the relevant executable.
+     *
      * @return Wrapper with identified executable, to be implemented in child classes.
      */
     protected abstract T identify();

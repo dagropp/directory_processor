@@ -16,7 +16,7 @@ public abstract class AbstractFilterNoParams implements Filter {
     /* Constructors */
 
     /**
-     * Constructor for AbstractFilterNoParams. Initialises files array and sets filter command.
+     * Constructor for AbstractFilterNoParams. Initialises files array and sets filter command and negation.
      *
      * @param files  File array to filter.
      * @param filter Filter command.

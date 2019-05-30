@@ -26,7 +26,7 @@ public class CommandFileParserFactory {
         // Sets the command file in a method that checks file existence and readability.
         File commandFile = setCommandFile(path);
         LinesConverter fileConverter = new LinesConverter(commandFile); // Converts file lines to Array.
-        LinesReformat reformatLines = new LinesReformat(fileConverter.getLines()); // Reformats lines.
+        ReformatLines reformatLines = new ReformatLines(fileConverter.getLines()); // Reformats lines.
         // Generates commands Array from the converted lines array.
         CommandsGenerator commandsGenerator = new CommandsGenerator(reformatLines.getResult());
         return commandsGenerator.getCommands(); // Returns the commands.

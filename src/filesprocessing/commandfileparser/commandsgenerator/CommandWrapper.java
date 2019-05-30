@@ -35,13 +35,6 @@ public class CommandWrapper {
     }
 
     /**
-     * @return True if both filter and order commands are not null. -- Am I using this method???
-     */
-    public boolean validList() {
-        return this.filter != null && this.order != null;
-    }
-
-    /**
      * @return Filter command.
      */
     public FilterWrapper getFilter() {
